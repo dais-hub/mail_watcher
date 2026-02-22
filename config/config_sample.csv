@@ -1,0 +1,43 @@
+Amazon受注メールの設定,constant,data
+"Amazonの受注を同期する(yes=1, no=0)",SWITCH_AMAZON,1
+メールサーバー,IMAP_HOST_AMAZON,alp105.wadax-sv.jp
+メールアドレス,EMAIL_ADDRESS_AMAZON,service@4rbooks.com
+メールアカウント,IMAP_USER_AMAZON,service@4rbooks.com
+パスワード,IMAP_PASS_AMAZON,dummy
+送信元フィルタ,FROM_FILTER_AMAZON,seller-notification@amazon.co.jp
+,,
+メルカリ受注メールの設定,,
+"メルカリの受注を同期する(yes=1, no=0)",SWITCH_MERCARI,1
+メールサーバー,IMAP_HOST_MERCARI,alp105.wadax-sv.jp
+メールアドレス,EMAIL_ADDRESS_MERCARI,service@4rbooks.com
+メールアカウント,IMAP_USER_MERCARI,service@4rbooks.com
+パスワード,IMAP_PASS_MERCARI,dummy
+送信元フィルタ,FROM_FILTER_MERCARI,no-reply@mercari-shops.com
+,,
+ラクマ受注メールの設定,,
+"ラクマの受注を同期する(yes=1, no=0)",SWITCH_RAKUMA,0
+メールサーバー,IMAP_HOST_RAKUMA,alp105.wadax-sv.jp
+メールアドレス,EMAIL_ADDRESS_RAKUMA,rakuma@4rbooks.com
+メールアカウント,IMAP_USER_RAKUMA,rakuma@4rbooks.com
+パスワード,IMAP_PASS_RAKUMA,dummy
+送信元フィルタ,FROM_FILTER_RAKUMA,noreply@fril.jp
+,,
+Amazon API設定,,
+LWA CLIENT ID,LWA_CLIENT_ID,dummy
+LWA CLIENT SECRET,LWA_CLIENT_SECRET,dummy
+LWA REFRESH TOKEN,LWA_REFRESH_TOKEN,dummy
+ACCESS TOKEN ENDPOINT,ACCESS_TOKEN_ENDPOINT,dummy
+AWS ACCESS KEY,AWS_ACCESS_KEY,dummy
+AWS SECRET KEY,AWS_SECRET_KEY,dummy
+ROLE ARN,ROLE_ARN,dummy
+SELLER ID,SELLER_ID,dummy
+MARKET PLACE ID,MARKETPLACE_ID,A1VC38T7YXB528
+,,
+メルカリshops設定,,
+https://mercari-shops.com/seller/shops/ココにある文字列,MERCARI_SELLER_FIX,DMZw4jWnetZo9QSQBsoACB
+ログインメールアドレス,MERCARI_LOGIN_MAIL_ADDRESS,service@4rbooks.com
+ログインパスワード,MERCARI_LOGIN_PASSWORD,dummy
+,,
+ラクマ設定,,
+ログインメールアドレス,RAKUMA_LOGIN_MAIL_ADDRESS,rakuma@4rbooks.com
+ログインパスワード,RAKUMA_LOGIN_PASSWORD,dummy
