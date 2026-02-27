@@ -10,7 +10,10 @@ ANCHOR_PATTERNS = [
     rf"注文確定\s*[:：]\s*(?!\d+点の商品が)([^\s\u3000<>]+)",
 ]
 
-RAKUMA_ORDER_ID_PATTERN = r"オーダーID\s*[:：]\s*(\d{6,9})"
+RAKUMA_ORDER_ID_PATTERNS = [
+    r"オーダーID\s*[:：]\s*(\d{6,12})",
+    r"注文番号\s*[:：]\s*(\d{6,12})",
+]
 
 def strip_html_to_text(s: str) -> str:
     if not s:
@@ -48,6 +51,22 @@ def looks_like_amazon(from_addr: str) -> bool:
 
 def looks_like_mercari(from_addr: str) -> bool:
     return bool(from_addr and ("mercari-shops.com" in from_addr.lower() or "mercari" in from_addr.lower()))
+
+def extract_rakuma_order_ids(subject: str, body_text: str) -> list[str]:
+    order_ids = set()
+    haystacks = []
+    if subject:
+        haystacks.append(subject)
+    if body_text:
+        haystacks.append(body_text)
+
+    for text in haystacks:
+        for pat in RAKUMA_ORDER_ID_PATTERNS:
+            for m in re.finditer(pat, text, flags=re.IGNORECASE):
+                order_id = (m.group(1) or "").strip()
+                if order_id.isdigit():
+                    order_ids.add(order_id)
+    return list(order_ids)
 
 # =====================================================
 # ログ設定
@@ -107,10 +126,16 @@ def main():
         elif looks_like_mercari(from_addr):
             sku_list = extract_skus_generic(subject, body)
         elif looks_like_rakuma(from_addr):
-            sku_list = re.findall(RAKUMA_ORDER_ID_PATTERN, body)
-            if sku_list:
-                log(f"🟣 ID {id_} | RAKUMA オーダーID記録: {', '.join(sku_list)} (SKU未検出想定)")
-                cur.execute("UPDATE emails SET status='sku_missing' WHERE id=?", (id_,))
+            order_ids = extract_rakuma_order_ids(subject, body)
+            if order_ids:
+                now = datetime.datetime.utcnow().isoformat()
+                order_id = order_ids[0]
+                pseudo_sku = f"RAKUMA_ORDER_ID:{order_id}"
+                log(f"🟣 ID {id_} | RAKUMA オーダーID抽出成功: {order_id}")
+                cur.execute(
+                    "UPDATE emails SET sku=?, status='rakuma_order_detected', updated_at=? WHERE id=?",
+                    (pseudo_sku, now, id_),
+                )
                 conn.commit()
                 continue
 
