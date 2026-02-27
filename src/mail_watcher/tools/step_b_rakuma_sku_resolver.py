@@ -10,14 +10,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-DEFAULT_PROFILE_DIR = r"C:\Users\daiji\AppData\Local\Programs\Python\Python311\rakuma_db_builder\chrome_rakuma_profile"
+DEFAULT_PROFILE_DIR = r"C:\Users\daiji\AppData\Local\Google\Chrome\User Data\RakumaProfile"
 DEFAULT_ITEM_ID = "760693767"
 SKU_TOKEN_PATTERN = r"[A-Z][A-Z0-9]{1,4}-\d{6}-\d{6,8}-\d{1,2}"
 SKU_TOKEN_RE = re.compile(rf"^{SKU_TOKEN_PATTERN}$")
 
 
 def build_shipping_url(item_id: str) -> str:
-    return f"https://web.fril.jp/v2/sale/shipping?is_web=1&item_id={item_id}"
+    return f"https://web.fril.jp/v2/sale/ship?is_web=1&item_id={item_id}"
 
 
 def extract_sku_from_text(text: str) -> str:
@@ -35,7 +35,6 @@ def extract_sku_from_text(text: str) -> str:
 def open_driver(profile_dir: str, headless: bool = False):
     options = Options()
     options.add_argument(f"--user-data-dir={profile_dir}")
-    options.add_argument("--profile-directory=Default")
     options.add_argument("--start-maximized")
     if headless:
         options.add_argument("--headless=new")
@@ -91,7 +90,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="Step B: Rakuma shippingページ→商品ページ説明欄からSKUを抽出"
     )
-    parser.add_argument("--order-id", default="824971570", help="評価用オーダーID文字列")
+    parser.add_argument("--order-id", default="760693767", help="評価用オーダーID文字列")
     parser.add_argument("--item-id", default=DEFAULT_ITEM_ID, help="shipping URL生成用 item_id")
     parser.add_argument("--profile-dir", default=DEFAULT_PROFILE_DIR, help="Chromeユーザープロファイル")
     parser.add_argument("--click-banner", action="store_true", help="data-url遷移の代わりにバナーをクリック")
