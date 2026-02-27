@@ -15,6 +15,8 @@ RAKUMA_ORDER_ID_PATTERNS = [
     r"注文番号\s*[:：]\s*(\d{6,12})",
 ]
 
+RAKUMA_TRIGGER_SUBJECT = "[楽天ラクマ] 決済完了のお知らせ"
+
 def strip_html_to_text(s: str) -> str:
     if not s:
         return ""
@@ -51,6 +53,9 @@ def looks_like_amazon(from_addr: str) -> bool:
 
 def looks_like_mercari(from_addr: str) -> bool:
     return bool(from_addr and ("mercari-shops.com" in from_addr.lower() or "mercari" in from_addr.lower()))
+
+def is_rakuma_trigger_subject(subject: str) -> bool:
+    return RAKUMA_TRIGGER_SUBJECT in (subject or "")
 
 def extract_rakuma_order_ids(subject: str, body_text: str) -> list[str]:
     order_ids = set()
@@ -126,6 +131,15 @@ def main():
         elif looks_like_mercari(from_addr):
             sku_list = extract_skus_generic(subject, body)
         elif looks_like_rakuma(from_addr):
+            if not is_rakuma_trigger_subject(subject):
+                log(f"ℹ️ ID {id_} | RAKUMA 非トリガー件名のためスキップ: {subject[:80]}")
+                cur.execute(
+                    "UPDATE emails SET status='ignored', updated_at=? WHERE id=?",
+                    (datetime.datetime.utcnow().isoformat(), id_),
+                )
+                conn.commit()
+                continue
+
             order_ids = extract_rakuma_order_ids(subject, body)
             if order_ids:
                 now = datetime.datetime.utcnow().isoformat()
