@@ -263,7 +263,7 @@ def main():
                         config.get("IMAP_HOST_RAKUMA", config.get("IMAP_HOST_AMAZON", "")),
                         config.get("IMAP_USER_RAKUMA", ""),
                         config.get("IMAP_PASS_RAKUMA", ""),
-                        config.get("FROM_FILTER_RAKUMA", "notice@rakuma.rakuten.co.jp"))
+                        config.get("FROM_FILTER_RAKUMA", "noreply@fril.jp"))
 
     log("=== IMAP受信処理完了 ===")
 
